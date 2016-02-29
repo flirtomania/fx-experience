@@ -57,6 +57,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static org.comtel2000.keyboard.control.VkProperties.*;
 
 /**
  * Helper class to create a {@link KeyboardPane}
@@ -64,7 +67,7 @@ import javafx.util.Duration;
  * @author comtel
  *
  */
-public class KeyBoardPopup extends Popup implements VkProperties {
+public class KeyBoardPopup extends Popup {
 
 	enum Visiblity {
 		/** Set position and visible true */
@@ -152,6 +155,13 @@ public class KeyBoardPopup extends Popup implements VkProperties {
 		});
 	}
 
+    // move keyboard to node
+    boolean moveToNode = true;
+
+    public void setMoveToNode(boolean moveToNode) {
+        this.moveToNode = moveToNode;
+    }
+
 	/**
 	 * search for nested input controls like {@code FakeFocusTextField}
 	 * 
@@ -194,7 +204,11 @@ public class KeyBoardPopup extends Popup implements VkProperties {
 		setVisible(visible, null);
 	}
 
-	void setVisible(final Visiblity visible, final TextInputControl textNode) {
+	private static final Logger log = LoggerFactory.getLogger(KeyBoardPopup.class);
+
+    void setVisible(final Visiblity visible, final TextInputControl textNode) {
+
+        log.error("setVisible {}", visible);
 
 		if ((visible == Visiblity.POS || visible == Visiblity.SHOW) && textNode != null) {
 			Map<String, String> vkProps = getVkProperties(textNode);
@@ -207,18 +221,22 @@ public class KeyBoardPopup extends Popup implements VkProperties {
 				}
 			}
 
-			Bounds textNodeBounds = textNode.localToScreen(textNode.getBoundsInLocal());
-			Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-			if (textNodeBounds.getMinX() + getWidth() > screenBounds.getMaxX()) {
-				setX(screenBounds.getMaxX() - getWidth());
-			} else {
-				setX(textNodeBounds.getMinX());
-			}
-			if (textNodeBounds.getMaxY() + getHeight() > screenBounds.getMaxY()) {
-				setY(textNodeBounds.getMinY() - getHeight() - offsetProperty.get());
-			} else {
-				setY(textNodeBounds.getMaxY() + offsetProperty.get());
-			}
+			log.error("setVisible {}", visible);
+
+            if (moveToNode) {
+                Bounds textNodeBounds = textNode.localToScreen(textNode.getBoundsInLocal());
+                Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+                if (textNodeBounds.getMinX() + getWidth() > screenBounds.getMaxX()) {
+                    setX(screenBounds.getMaxX() - getWidth());
+                } else {
+                    setX(textNodeBounds.getMinX());
+                }
+                if (textNodeBounds.getMaxY() + getHeight() > screenBounds.getMaxY()) {
+                    setY(textNodeBounds.getMinY() - getHeight() - offsetProperty.get());
+                } else {
+                    setY(textNodeBounds.getMaxY() + offsetProperty.get());
+                }
+            }
 		}
 
 		if (visible == Visiblity.POS || visible == Visiblity.HIDE && !isShowing()) {

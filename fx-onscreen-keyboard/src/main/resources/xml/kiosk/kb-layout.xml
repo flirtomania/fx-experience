@@ -45,11 +45,12 @@
 	</Row>
 
 	<Row rowEdgeFlags="bottom">
-		<Key codes="-6" keyLabel="CTRL" keyLabelStyle=".small-style" keyWidth="50" />
+		<!--<Key codes="-6" keyLabel="CTRL" keyLabelStyle=".small-style" keyWidth="50" />-->
 		<Key codes="-2" keyLabel="?123" keyLabelStyle=".small-style" keyWidth="50" />
-		<Key codes="32" keyLabel="3" keyLabelStyle=".font-fxkeyboard-alpha" movable="true" keyWidth="240" repeatable="true" />
-		<Key codes="-7" keyLabel="EN" keyLabelStyle=".small-style" keyWidth="50" />
-		<Key codes="-3" keyLabel="2" keyLabelStyle=".font-fxkeyboard" keyWidth="50" />
+        <!--keyLabelStyle=".font-fxkeyboard-alpha"-->
+		<Key codes="32" keyLabel="space" movable="true" keyWidth="240" repeatable="true" />
+		<!--<Key codes="-7" keyLabel="EN" keyLabelStyle=".small-style" keyWidth="50" />-->
+		<!--<Key codes="-3" keyLabel="2" keyLabelStyle=".font-fxkeyboard" keyWidth="50" />-->
 	</Row>
 </Keyboard>
     

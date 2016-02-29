@@ -224,7 +224,13 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
 
 	}
 
-	private void setLayoutLocale(final Locale local) throws MalformedURLException, IOException, URISyntaxException {
+    boolean allowMovable = false;
+
+	public void setAllowMovable(boolean allowMovable) {
+        this.allowMovable = allowMovable;
+    }
+
+	private void setLayoutLocale(final Locale local) throws IOException, URISyntaxException {
 
 		logger.debug("try to set keyboard local: {}->{}", activeLocaleProperty.get(), local);
 
@@ -262,7 +268,7 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
 
 	}
 
-	private void addTypeRegion(KeyboardType type, String root, String file) throws MalformedURLException, IOException {
+	private void addTypeRegion(KeyboardType type, String root, String file) throws IOException {
 		URL url = KeyboardLayoutHandler.class.getResource(root + "/" + file);
 		if (url == null && Files.exists(Paths.get(root, file))) {
 			url = Paths.get(root, file).toUri().toURL();
@@ -502,12 +508,15 @@ public class KeyboardPane extends Region implements StandardKeyCode, EventHandle
 				button.setPrefWidth(defaultKeyWidth);
 				button.setMaxWidth(defaultKeyWidth * 100);
 
-				button.setMovable(Boolean.TRUE == key.isMovable());
-				button.setRepeatable(Boolean.TRUE == key.isRepeatable());
-				if (button.isMovable()) {
-					installMoveHandler(button);
-					button.getStyleClass().add("movable-style");
-				}
+                if (allowMovable) {
+                    logger.trace("allowMovable is true");
+                    button.setMovable(Boolean.TRUE == key.isMovable());
+                    button.setRepeatable(Boolean.TRUE == key.isRepeatable());
+                    if (button.isMovable()) {
+                        installMoveHandler(button);
+                        button.getStyleClass().add("movable-style");
+                    }
+                }
 
 				if (key.getKeyLabelStyle() != null && key.getKeyLabelStyle().startsWith(".")) {
 					for (String style : key.getKeyLabelStyle().split(";")) {
